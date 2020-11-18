@@ -17,6 +17,14 @@ public class ScencePanel extends JPanel implements ActionListener {
     private ImageIcon player3Card = new ImageIcon("Resource/main/card_left.png");
     private Integer ScenceX;
     private Integer ScenceY;
+    private PlayAction playAction;
+    private int[] Action;
+    private JLabel[] player;
+    private int cards = 3;
+    private int P1cards = 3;
+    private int P2cards = 3;
+    private int P3cards = 3;
+
     public ScencePanel(){
         this.ScenceX = 0;
         this.ScenceY = 0;
@@ -64,49 +72,50 @@ public class ScencePanel extends JPanel implements ActionListener {
             add(playBtn);
             //player's card
             //use variable to raplace the number 3
-            JLabel player[] = new JLabel[3];
-            for(int x = 0 ; x < 3 ; x++){
+            JLabel player[] = new JLabel[cards];
+            // ImageIcon cardIcon[] = new ImageIcon[3];
+            // JLabel cardView[] = new JLabel[3];
+            for(int x = 0 ; x < cards ; x++){
+                // cardIcon[x] = new ImageIcon("Resource/originalcard/originalgame1.png");
+                // cardIcon[x].setImage(cardIcon[x].getImage().getScaledInstance(305,402,Image.SCALE_DEFAULT));
                 player[x] = new JLabel(playerCard);
                 player[x].setBounds(470 + x*120, 450, 111, 144);
                 player[x].setOpaque(false);
-                player[x].addMouseListener(new MouseAdapter(){
-                    private ImageIcon cardIcon = new ImageIcon("Resource/originalcard/originalgame1.png");
-                    private JLabel cardView = new JLabel(cardIcon);
-                    @Override
-                    public void mouseEntered(MouseEvent e){
-                        super.mouseEntered(e);
-                        cardView.setBounds(490, 230, 285, 376);
-                        add(cardView);
-                    }
-                    public void mouseExited(MouseEvent e){
-                        super.mouseExited(e);
-                        remove(cardView);
-                        revalidate();
-                        repaint();
-                    }
-                });
+                player[x].setBorder(null);
+                // player[x].addMouseListener(new MouseAdapter() {
+                //     @Override
+                //     public void mouseEntered(MouseEvent e) {
+                //         super.mouseEntered(e);
+                        
+                //         // playAction = new PlayAction(1, cards);
+                //     }
+                //     @Override
+                //     public void mouseExited(MouseEvent e) {
+
+                //     }
+                // });
                 add(player[x]);
             }
             //right player's card
             //use variable to replace the number 3
-            JLabel player1[] = new JLabel[3];
-            for(int x = 0 ; x < 3 ; x++){
+            JLabel player1[] = new JLabel[P1cards];
+            for(int x = 0 ; x < P1cards ; x++){
                 player1[x] = new JLabel(player1Card);
                 player1[x].setBounds(940 + x*10, 160 + x*61, 78, 79);
                 add(player1[x]);
             }
             //up player's card
             //use variable to replace the number 3
-            JLabel player2[] = new JLabel[3];
-            for(int x = 0 ; x < 3 ; x++){
+            JLabel player2[] = new JLabel[P2cards];
+            for(int x = 0 ; x < P2cards ; x++){
                 player2[x] = new JLabel(player2Card);
                 player2[x].setBounds(510 + x*75, 135, 59, 78);
                 add(player2[x]);
             }
             //left player's card
             //use variable to replace the number 3
-            JLabel player3[] = new JLabel[3];
-            for(int x = 0 ; x < 3 ; x++){
+            JLabel player3[] = new JLabel[P3cards];
+            for(int x = 0 ; x < P3cards ; x++){
                 player3[x] = new JLabel(player3Card);
                 player3[x].setBounds(193 + x*10, 401 - x*61, 78, 79);
                 add(player3[x]);
@@ -157,8 +166,8 @@ public class ScencePanel extends JPanel implements ActionListener {
             exitBtn.setContentAreaFilled(false);
             exitBtn.addActionListener(this);
             add(exitBtn);
-        }else if(btnStr.equals("PLAY")){
-            
+        // }else if(btnStr.equals("PLAY")){
+        //     playAction = new PlayAction();
         }else{
             System.out.println("Unexepcted Error!!");
         }
