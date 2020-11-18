@@ -1,6 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 public class ScencePanel extends JPanel implements ActionListener {
     private CheckExit checkExit;
@@ -17,6 +18,8 @@ public class ScencePanel extends JPanel implements ActionListener {
     private ImageIcon player3Card = new ImageIcon("Resource/main/card_left.png");
     private Integer ScenceX;
     private Integer ScenceY;
+    private ReadFile readFile;
+    private ArrayList<String> cardInfo;
     private PlayAction playAction;
     private int[] Action;
     private JLabel[] player;
@@ -28,6 +31,7 @@ public class ScencePanel extends JPanel implements ActionListener {
     public ScencePanel(){
         this.ScenceX = 0;
         this.ScenceY = 0;
+        this.cardInfo = readFile.getFile();
         setLayout(null);
         
         JButton startBtn = new JButton(startIcon);
