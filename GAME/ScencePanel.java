@@ -4,8 +4,9 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 public class ScencePanel extends JPanel implements ActionListener {
+    //check if you really want to exit the game
     private CheckExit checkExit;
-    //load images
+    //load a lot of images
     private Image Scence = new ImageIcon("Resource/all.png").getImage();
     private ImageIcon startIcon = new ImageIcon("Resource/home/start_button.png");
     private ImageIcon ruleIcon = new ImageIcon("Resource/home/rule_button.png");
@@ -16,22 +17,33 @@ public class ScencePanel extends JPanel implements ActionListener {
     private ImageIcon player1Card = new ImageIcon("Resource/main/card_right.png");
     private ImageIcon player2Card = new ImageIcon("Resource/main/card.png");
     private ImageIcon player3Card = new ImageIcon("Resource/main/card_left.png");
+    private ImageIcon number[] = new ImageIcon[]{new ImageIcon("Resource/number/0.png"),new ImageIcon("Resource/number/1.png"),new ImageIcon("Resource/number/2.png"),new ImageIcon("Resource/number/3.png"),new ImageIcon("Resource/number/4.png"),new ImageIcon("Resource/number/5.png"),new ImageIcon("Resource/number/6.png"),new ImageIcon("Resource/number/7.png"),new ImageIcon("Resource/number/8.png"),new ImageIcon("Resource/number/9.png"),new ImageIcon("Resource/number/10.png"),new ImageIcon("Resource/number/11.png"),new ImageIcon("Resource/number/12.png"),new ImageIcon("Resource/number/13.png"),new ImageIcon("Resource/number/14.png"),new ImageIcon("Resource/number/15.png")};
+    private ImageIcon userEarth[] = new ImageIcon[]{new ImageIcon("Resource/main/eth_button_ori.png"),new ImageIcon("Resource/main/eth_button_h1.png"),new ImageIcon("Resource/main/eth_button_h2.png"),new ImageIcon("Resource/main/eth_button_h3.png")};
+    private ImageIcon playerEarth[] = new ImageIcon[]{new ImageIcon("Resource/main/eth_ori.png"),new ImageIcon("Resource/main/eth_h1.png"),new ImageIcon("Resource/main/eth_h2.png"),new ImageIcon("Resource/main/eth_h3.png")};
+    private ImageIcon cardStack = new ImageIcon("Resource/main/deck.png");
+    //decide the scence user see
     private Integer ScenceX;
     private Integer ScenceY;
-    private ReadFile readFile;
-    private ArrayList<String> cardInfo;
-    private PlayAction playAction;
-    private int[] Action;
-    private JLabel[] player;
-    private int cards = 3;
-    private int P1cards = 3;
-    private int P2cards = 3;
-    private int P3cards = 3;
+    //player status >> cards, holes, footsteps(score) and earthimg
+    private Player userStatus = new Player(), P1Status = new Player(), P2Status = new Player(), P3Status = new Player();
+    private JButton user[] = new JButton[5];
+    private JLabel player1[] = new JLabel[5], player2[] = new JLabel[5], player3[] = new JLabel[5];
+    private ArrayList<Integer> cards, P1cards, P2cards, P3cards;
+    private JLabel holes, P1holes, P2holes, P3holes;
+    private JLabel footsteps, P1footsteps, P2footsteps, P3footsteps;
+    private JLabel earth, P1earth, P2earth, P3earth;
+    //show cards and play
+    private Deck cardDeck;
+    private JLabel showCard = new JLabel();
+    private Integer[] cardNum = new Integer[5];
+    private int record;
+    private PlayAction playAction = new PlayAction();
+    private int userDraw = 1;
 
     public ScencePanel(){
         this.ScenceX = 0;
         this.ScenceY = 0;
-        this.cardInfo = readFile.getFile();
+        
         setLayout(null);
         
         JButton startBtn = new JButton(startIcon);
@@ -64,64 +76,149 @@ public class ScencePanel extends JPanel implements ActionListener {
         String btnStr = e.getActionCommand();
         if(btnStr.equals("START")){
             this.ScenceX = 0;
-            this.ScenceY = 770;
+            this.ScenceY = 740;
             removeAll();
+
+            //DECK CLASS
+            cardDeck = new Deck();
+
+            showCard.setBounds(511, 190, 244, 321);
+            add(showCard);
+            showCard.setVisible(false);
+            //PLAY BUTTON
             JButton playBtn = new JButton(playIcon);
             playBtn.setActionCommand("PLAY");
-            playBtn.setBounds(904, 600, 234, 100);
+            playBtn.setBounds(905, 625, 234, 100);
             playBtn.setOpaque(false);
             playBtn.setBorder(null);
             playBtn.setContentAreaFilled(false);
             playBtn.addActionListener(this);
             add(playBtn);
-            //player's card
-            //use variable to raplace the number 3
-            JLabel player[] = new JLabel[cards];
-            // ImageIcon cardIcon[] = new ImageIcon[3];
-            // JLabel cardView[] = new JLabel[3];
-            for(int x = 0 ; x < cards ; x++){
-                // cardIcon[x] = new ImageIcon("Resource/originalcard/originalgame1.png");
-                // cardIcon[x].setImage(cardIcon[x].getImage().getScaledInstance(305,402,Image.SCALE_DEFAULT));
-                player[x] = new JLabel(playerCard);
-                player[x].setBounds(470 + x*120, 450, 111, 144);
-                player[x].setOpaque(false);
-                player[x].setBorder(null);
-                // player[x].addMouseListener(new MouseAdapter() {
-                //     @Override
-                //     public void mouseEntered(MouseEvent e) {
-                //         super.mouseEntered(e);
-                        
-                //         // playAction = new PlayAction(1, cards);
-                //     }
-                //     @Override
-                //     public void mouseExited(MouseEvent e) {
 
-                //     }
-                // });
-                add(player[x]);
+            //DECK BUTTON
+            JButton stack = new JButton(cardStack);
+            stack.setActionCommand("DRAW");
+            stack.setBounds(590, 310, 96, 82);
+            stack.setOpaque(false);
+            stack.setBorder(null);
+            stack.setContentAreaFilled(false);
+            stack.addActionListener(this);
+            add(stack);
+
+            //USER's card
+            // userStatus = new Player();
+            cards = userStatus.getCards();
+            
+            holes = new JLabel(number[userStatus.getHoles()]);
+            holes.setBounds(620 ,670 , 50, 50);
+            add(holes);
+            footsteps = new JLabel(number[userStatus.getFootsteps()]);
+            footsteps.setBounds(390 ,670 , 50, 50);
+            add(footsteps);
+            earth = new JLabel(userEarth[userStatus.getHoles()]);
+            earth.setBounds(0 ,442 , 390, 298);
+            add(earth);
+
+            //RECORD CARD NUMBER
+            for(int num = 1 ; num <= 5 ; num++){
+                if(num < cards.size()){
+                    cardNum[num-1] = cards.get(num);
+                }else{
+                    cardNum[num-1] = 0;
+                }
             }
-            //right player's card
-            //use variable to replace the number 3
-            JLabel player1[] = new JLabel[P1cards];
-            for(int x = 0 ; x < P1cards ; x++){
+            for(int x = 0 ; x < cards.get(0) ; x++){
+                user[x] = new JButton(playerCard);
+                user[x].setActionCommand("CARD" + String.valueOf(x));
+                user[x].setBounds(380 + x*120, 450, 111, 144);
+                user[x].setOpaque(false);
+                user[x].setBorder(null);
+                user[x].setContentAreaFilled(false);
+                user[x].addActionListener(this);
+                //FOR MOUSE HOVER TO SEE THE CARD INFO
+                user[x].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        super.mouseEntered(e);
+                        Object btn;
+                        btn = e.getSource();
+                        Integer count = 0;
+                        //CHECK WHICH CARD HOVER
+                        for(JButton check: user){
+                            if(check == btn){
+                                showCard.setIcon(cardDeck.getCardImg(cardNum[count]));
+                            }
+                            count++;
+                        }
+                        showCard.setVisible(true);
+                        
+                    }
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        super.mouseExited(e);
+                        showCard.setVisible(false);
+                    }
+                });
+                add(user[x]);
+            }
+
+            //PLAYER1's card
+            // P1Status = new Player();
+            P1cards = P1Status.getCards();
+
+            P1holes = new JLabel(number[P1Status.getHoles()]);
+            P1holes.setBounds(1170 ,450 , 50, 50);
+            add(P1holes);
+            P1footsteps = new JLabel(number[P1Status.getFootsteps()]);
+            P1footsteps.setBounds(1170 ,375 , 50, 50);
+            add(P1footsteps);
+            P1earth = new JLabel(playerEarth[P1Status.getHoles()]);
+            P1earth.setBounds(1060 ,125 , 207, 203);
+            add(P1earth);
+
+            for(int x = 0 ; x < P1cards.get(0) ; x++){
                 player1[x] = new JLabel(player1Card);
-                player1[x].setBounds(940 + x*10, 160 + x*61, 78, 79);
+                player1[x].setBounds(940 + x*10, 180 + x*61, 78, 79);
                 add(player1[x]);
             }
-            //up player's card
-            //use variable to replace the number 3
-            JLabel player2[] = new JLabel[P2cards];
-            for(int x = 0 ; x < P2cards ; x++){
+
+            //PLAYER2's card
+            // P2Status = new Player();
+            P2cards = P2Status.getCards();
+
+            P2holes = new JLabel(number[P2Status.getHoles()]);
+            P2holes.setBounds(805 ,75 , 50, 50);
+            add(P2holes);
+            P2footsteps = new JLabel(number[P2Status.getFootsteps()]);
+            P2footsteps.setBounds(585 ,75 , 50, 50);
+            add(P2footsteps);
+            P2earth = new JLabel(playerEarth[P2Status.getHoles()]);
+            P2earth.setBounds(295 ,0 , 207, 203);
+            add(P2earth);
+
+            for(int x = 0 ; x < P2cards.get(0) ; x++){
                 player2[x] = new JLabel(player2Card);
-                player2[x].setBounds(510 + x*75, 135, 59, 78);
+                player2[x].setBounds(510 + x*75, 150, 59, 78);
                 add(player2[x]);
             }
-            //left player's card
-            //use variable to replace the number 3
-            JLabel player3[] = new JLabel[P3cards];
-            for(int x = 0 ; x < P3cards ; x++){
+
+            //PLAYER3's card
+            // P3Status = new Player();
+            P3cards = P3Status.getCards();
+
+            P3holes = new JLabel(number[P3Status.getHoles()]);
+            P3holes.setBounds(100 ,450 , 50, 50);
+            add(P3holes);
+            P3footsteps = new JLabel(number[P3Status.getFootsteps()]);
+            P3footsteps.setBounds(100 ,375 , 50, 50);
+            add(P3footsteps);
+            P3earth = new JLabel(playerEarth[P3Status.getHoles()]);
+            P3earth.setBounds(0 ,120 , 207, 203);
+            add(P3earth);
+
+            for(int x = 0 ; x < P3cards.get(0) ; x++){
                 player3[x] = new JLabel(player3Card);
-                player3[x].setBounds(193 + x*10, 401 - x*61, 78, 79);
+                player3[x].setBounds(210 + x*10, 440 - x*61, 78, 79);
                 add(player3[x]);
             }
             repaint();
@@ -170,8 +267,212 @@ public class ScencePanel extends JPanel implements ActionListener {
             exitBtn.setContentAreaFilled(false);
             exitBtn.addActionListener(this);
             add(exitBtn);
-        // }else if(btnStr.equals("PLAY")){
-        //     playAction = new PlayAction();
+        }else if(btnStr.equals("PLAY")){
+            //NOT YET DEAL WITH THAT USER CAN ONLY PLAY AT HIS/HER TURN
+            cards.remove(record + 1);
+            userStatus.setCards(cards);
+            this.ScenceX = 0;
+            this.ScenceY = 740;
+            removeAll();
+
+            //DECK CLASS
+            cardDeck = new Deck();
+
+            showCard.setBounds(511, 190, 244, 321);
+            add(showCard);
+            showCard.setVisible(false);
+            //PLAY BUTTON
+            JButton playBtn = new JButton(playIcon);
+            playBtn.setActionCommand("PLAY");
+            playBtn.setBounds(905, 625, 234, 100);
+            playBtn.setOpaque(false);
+            playBtn.setBorder(null);
+            playBtn.setContentAreaFilled(false);
+            playBtn.addActionListener(this);
+            add(playBtn);
+
+            //DECK BUTTON
+            JButton stack = new JButton(cardStack);
+            stack.setActionCommand("DRAW");
+            stack.setBounds(590, 310, 96, 82);
+            stack.setOpaque(false);
+            stack.setBorder(null);
+            stack.setContentAreaFilled(false);
+            stack.addActionListener(this);
+            add(stack);
+
+            //FOR TEST!!!!!!
+            userDraw++;
+
+            //USER's card
+            // userStatus = new Player();
+            cards = userStatus.getCards();
+            
+            holes = new JLabel(number[userStatus.getHoles()]);
+            holes.setBounds(620 ,670 , 50, 50);
+            add(holes);
+            footsteps = new JLabel(number[userStatus.getFootsteps()]);
+            footsteps.setBounds(390 ,670 , 50, 50);
+            add(footsteps);
+            earth = new JLabel(userEarth[userStatus.getHoles()]);
+            earth.setBounds(0 ,442 , 390, 298);
+            add(earth);
+
+            //RECORD CARD NUMBER
+            for(int num = 1 ; num <= 5 ; num++){
+                if(num < cards.size()){
+                    cardNum[num-1] = cards.get(num);
+                }else{
+                    cardNum[num-1] = 0;
+                }
+            }
+            for(int x = 0 ; x < cards.get(0) ; x++){
+                user[x] = new JButton(playerCard);
+                user[x].setActionCommand("CARD" + String.valueOf(x));
+                user[x].setBounds(380 + x*120, 450, 111, 144);
+                user[x].setOpaque(false);
+                user[x].setBorder(null);
+                user[x].setContentAreaFilled(false);
+                user[x].addActionListener(this);
+                //FOR MOUSE HOVER TO SEE THE CARD INFO
+                user[x].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        super.mouseEntered(e);
+                        Object btn;
+                        btn = e.getSource();
+                        Integer count = 0;
+                        //CHECK WHICH CARD HOVER
+                        for(JButton check: user){
+                            if(check == btn){
+                                showCard.setIcon(cardDeck.getCardImg(cardNum[count]));
+                            }
+                            count++;
+                        }
+                        showCard.setVisible(true);
+                        
+                    }
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        super.mouseExited(e);
+                        showCard.setVisible(false);
+                    }
+                });
+                add(user[x]);
+            }
+
+            //PLAYER1's card
+            // P1Status = new Player();
+            P1cards = P1Status.getCards();
+
+            P1holes = new JLabel(number[P1Status.getHoles()]);
+            P1holes.setBounds(1170 ,450 , 50, 50);
+            add(P1holes);
+            P1footsteps = new JLabel(number[P1Status.getFootsteps()]);
+            P1footsteps.setBounds(1170 ,375 , 50, 50);
+            add(P1footsteps);
+            P1earth = new JLabel(playerEarth[P1Status.getHoles()]);
+            P1earth.setBounds(1060 ,125 , 207, 203);
+            add(P1earth);
+
+            for(int x = 0 ; x < P1cards.get(0) ; x++){
+                player1[x] = new JLabel(player1Card);
+                player1[x].setBounds(940 + x*10, 180 + x*61, 78, 79);
+                add(player1[x]);
+            }
+
+            //PLAYER2's card
+            // P2Status = new Player();
+            P2cards = P2Status.getCards();
+
+            P2holes = new JLabel(number[P2Status.getHoles()]);
+            P2holes.setBounds(805 ,75 , 50, 50);
+            add(P2holes);
+            P2footsteps = new JLabel(number[P2Status.getFootsteps()]);
+            P2footsteps.setBounds(585 ,75 , 50, 50);
+            add(P2footsteps);
+            P2earth = new JLabel(playerEarth[P2Status.getHoles()]);
+            P2earth.setBounds(295 ,0 , 207, 203);
+            add(P2earth);
+
+            for(int x = 0 ; x < P2cards.get(0) ; x++){
+                player2[x] = new JLabel(player2Card);
+                player2[x].setBounds(510 + x*75, 150, 59, 78);
+                add(player2[x]);
+            }
+
+            //PLAYER3's card
+            // P3Status = new Player();
+            P3cards = P3Status.getCards();
+
+            P3holes = new JLabel(number[P3Status.getHoles()]);
+            P3holes.setBounds(100 ,450 , 50, 50);
+            add(P3holes);
+            P3footsteps = new JLabel(number[P3Status.getFootsteps()]);
+            P3footsteps.setBounds(100 ,375 , 50, 50);
+            add(P3footsteps);
+            P3earth = new JLabel(playerEarth[P3Status.getHoles()]);
+            P3earth.setBounds(0 ,120 , 207, 203);
+            add(P3earth);
+
+            for(int x = 0 ; x < P3cards.get(0) ; x++){
+                player3[x] = new JLabel(player3Card);
+                player3[x].setBounds(210 + x*10, 440 - x*61, 78, 79);
+                add(player3[x]);
+            }
+            repaint();
+            //TODO PLAY AND MINUS YOUR CARD
+            
+        }else if(btnStr.equals("CARD0")){           
+            this.record = 0;                        //RECORD THE CARD YOU CHOOSE
+        }else if(btnStr.equals("CARD1")){
+            this.record = 1;                        //RECORD THE CARD YOU CHOOSE
+        }else if(btnStr.equals("CARD2")){
+            this.record = 2;                        //RECORD THE CARD YOU CHOOSE
+        }else if(btnStr.equals("CARD3")){
+            this.record = 3;                        //RECORD THE CARD YOU CHOOSE
+        }else if(btnStr.equals("CARD4")){
+            this.record = 4;                        //RECORD THE CARD YOU CHOOSE
+        }else if(btnStr.equals("DRAW")){
+            while(userDraw > 0){                    //IF USER CAN DRAW A CARD,
+                int x = cards.size() - 1;           //LET USER DRAW
+                cards.add((int)((Math.random()*100)%16+1));
+                userStatus.setCards(cards);
+                cardNum[x] = cards.get(x+1);
+                user[x] = new JButton(playerCard);
+                user[x].setActionCommand("CARD" + String.valueOf(x));
+                user[x].setBounds(380 + x*120, 450, 111, 144);
+                user[x].setOpaque(false);
+                user[x].setBorder(null);
+                user[x].setContentAreaFilled(false);
+                user[x].addActionListener(this);
+                //FOR MOUSE HOVER TO SEE THE CARD INFO
+                user[x].addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseEntered(MouseEvent e) {
+                        super.mouseEntered(e);
+                        Object btn;
+                        btn = e.getSource();
+                        Integer count = 0;
+                        //CHECK WHICH CARD HOVER
+                        for(JButton check: user){
+                            if(check == btn){
+                                showCard.setIcon(cardDeck.getCardImg(cardNum[count]));
+                            }
+                            count++;
+                        }
+                        showCard.setVisible(true);
+                    }
+                    @Override
+                    public void mouseExited(MouseEvent e) {
+                        super.mouseExited(e);
+                        showCard.setVisible(false);
+                    }
+                });
+                add(user[x]);
+                repaint();
+                userDraw--;
+            }
         }else{
             System.out.println("Unexepcted Error!!");
         }

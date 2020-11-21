@@ -1,12 +1,16 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-
+//NO USE NOW
 public class PlayAction {
-    public PlayAction(int action, int cards){
-        
-        if(action == 1){
-            
-        }
+    private Integer card;
+    public PlayAction() {
+        this.card = 0;
+    }
+    public void setCard(Integer cardNum) {
+        this.card = cardNum;
+    }
+    public Integer getCard() {
+        return this.card;
     }
 }
