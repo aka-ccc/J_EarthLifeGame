@@ -25,7 +25,7 @@ public class ScencePanel extends JPanel implements ActionListener {
     private Integer ScenceX;
     private Integer ScenceY;
     //player status >> cards, holes, footsteps(score) and earthimg
-    private Player userStatus = new Player(), P1Status = new Player(), P2Status = new Player(), P3Status = new Player();
+    private Player status[] = new Player[]{new Player(), new Player(), new Player(), new Player()};
     private JButton user[] = new JButton[5];
     private JLabel player1[] = new JLabel[5], player2[] = new JLabel[5], player3[] = new JLabel[5];
     private ArrayList<Integer> cards, P1cards, P2cards, P3cards;
@@ -107,15 +107,15 @@ public class ScencePanel extends JPanel implements ActionListener {
 
             //USER's card
             // userStatus = new Player();
-            cards = userStatus.getCards();
+            cards = status[0].getCards();
             
-            holes = new JLabel(number[userStatus.getHoles()]);
+            holes = new JLabel(number[status[0].getHoles()]);
             holes.setBounds(620 ,670 , 50, 50);
             add(holes);
-            footsteps = new JLabel(number[userStatus.getFootsteps()]);
+            footsteps = new JLabel(number[status[0].getFootsteps()]);
             footsteps.setBounds(390 ,670 , 50, 50);
             add(footsteps);
-            earth = new JLabel(userEarth[userStatus.getHoles()]);
+            earth = new JLabel(userEarth[status[0].getHoles()]);
             earth.setBounds(0 ,442 , 390, 298);
             add(earth);
 
@@ -164,15 +164,15 @@ public class ScencePanel extends JPanel implements ActionListener {
 
             //PLAYER1's card
             // P1Status = new Player();
-            P1cards = P1Status.getCards();
+            P1cards = status[1].getCards();
 
-            P1holes = new JLabel(number[P1Status.getHoles()]);
+            P1holes = new JLabel(number[status[1].getHoles()]);
             P1holes.setBounds(1170 ,450 , 50, 50);
             add(P1holes);
-            P1footsteps = new JLabel(number[P1Status.getFootsteps()]);
+            P1footsteps = new JLabel(number[status[1].getFootsteps()]);
             P1footsteps.setBounds(1170 ,375 , 50, 50);
             add(P1footsteps);
-            P1earth = new JLabel(playerEarth[P1Status.getHoles()]);
+            P1earth = new JLabel(playerEarth[status[1].getHoles()]);
             P1earth.setBounds(1060 ,125 , 207, 203);
             add(P1earth);
 
@@ -184,15 +184,15 @@ public class ScencePanel extends JPanel implements ActionListener {
 
             //PLAYER2's card
             // P2Status = new Player();
-            P2cards = P2Status.getCards();
+            P2cards = status[2].getCards();
 
-            P2holes = new JLabel(number[P2Status.getHoles()]);
+            P2holes = new JLabel(number[status[2].getHoles()]);
             P2holes.setBounds(805 ,75 , 50, 50);
             add(P2holes);
-            P2footsteps = new JLabel(number[P2Status.getFootsteps()]);
+            P2footsteps = new JLabel(number[status[2].getFootsteps()]);
             P2footsteps.setBounds(585 ,75 , 50, 50);
             add(P2footsteps);
-            P2earth = new JLabel(playerEarth[P2Status.getHoles()]);
+            P2earth = new JLabel(playerEarth[status[2].getHoles()]);
             P2earth.setBounds(295 ,0 , 207, 203);
             add(P2earth);
 
@@ -204,15 +204,15 @@ public class ScencePanel extends JPanel implements ActionListener {
 
             //PLAYER3's card
             // P3Status = new Player();
-            P3cards = P3Status.getCards();
+            P3cards = status[3].getCards();
 
-            P3holes = new JLabel(number[P3Status.getHoles()]);
+            P3holes = new JLabel(number[status[3].getHoles()]);
             P3holes.setBounds(100 ,450 , 50, 50);
             add(P3holes);
-            P3footsteps = new JLabel(number[P3Status.getFootsteps()]);
+            P3footsteps = new JLabel(number[status[3].getFootsteps()]);
             P3footsteps.setBounds(100 ,375 , 50, 50);
             add(P3footsteps);
-            P3earth = new JLabel(playerEarth[P3Status.getHoles()]);
+            P3earth = new JLabel(playerEarth[status[3].getHoles()]);
             P3earth.setBounds(0 ,120 , 207, 203);
             add(P3earth);
 
@@ -269,8 +269,11 @@ public class ScencePanel extends JPanel implements ActionListener {
             add(exitBtn);
         }else if(btnStr.equals("PLAY")){
             //NOT YET DEAL WITH THAT USER CAN ONLY PLAY AT HIS/HER TURN
+            playAction.setPlayers(status);
+            playAction.setCard(cardNum[record]);
+            
             cards.remove(record + 1);
-            userStatus.setCards(cards);
+            status[0].setCards(cards);
             this.ScenceX = 0;
             this.ScenceY = 740;
             removeAll();
@@ -305,16 +308,15 @@ public class ScencePanel extends JPanel implements ActionListener {
             userDraw++;
 
             //USER's card
-            // userStatus = new Player();
-            cards = userStatus.getCards();
+            cards = status[0].getCards();
             
-            holes = new JLabel(number[userStatus.getHoles()]);
+            holes = new JLabel(number[status[0].getHoles()]);
             holes.setBounds(620 ,670 , 50, 50);
             add(holes);
-            footsteps = new JLabel(number[userStatus.getFootsteps()]);
+            footsteps = new JLabel(number[status[0].getFootsteps()]);
             footsteps.setBounds(390 ,670 , 50, 50);
             add(footsteps);
-            earth = new JLabel(userEarth[userStatus.getHoles()]);
+            earth = new JLabel(userEarth[status[0].getHoles()]);
             earth.setBounds(0 ,442 , 390, 298);
             add(earth);
 
@@ -362,16 +364,15 @@ public class ScencePanel extends JPanel implements ActionListener {
             }
 
             //PLAYER1's card
-            // P1Status = new Player();
-            P1cards = P1Status.getCards();
+            P1cards = status[1].getCards();
 
-            P1holes = new JLabel(number[P1Status.getHoles()]);
+            P1holes = new JLabel(number[status[1].getHoles()]);
             P1holes.setBounds(1170 ,450 , 50, 50);
             add(P1holes);
-            P1footsteps = new JLabel(number[P1Status.getFootsteps()]);
+            P1footsteps = new JLabel(number[status[1].getFootsteps()]);
             P1footsteps.setBounds(1170 ,375 , 50, 50);
             add(P1footsteps);
-            P1earth = new JLabel(playerEarth[P1Status.getHoles()]);
+            P1earth = new JLabel(playerEarth[status[1].getHoles()]);
             P1earth.setBounds(1060 ,125 , 207, 203);
             add(P1earth);
 
@@ -382,16 +383,15 @@ public class ScencePanel extends JPanel implements ActionListener {
             }
 
             //PLAYER2's card
-            // P2Status = new Player();
-            P2cards = P2Status.getCards();
+            P2cards = status[2].getCards();
 
-            P2holes = new JLabel(number[P2Status.getHoles()]);
+            P2holes = new JLabel(number[status[2].getHoles()]);
             P2holes.setBounds(805 ,75 , 50, 50);
             add(P2holes);
-            P2footsteps = new JLabel(number[P2Status.getFootsteps()]);
+            P2footsteps = new JLabel(number[status[2].getFootsteps()]);
             P2footsteps.setBounds(585 ,75 , 50, 50);
             add(P2footsteps);
-            P2earth = new JLabel(playerEarth[P2Status.getHoles()]);
+            P2earth = new JLabel(playerEarth[status[2].getHoles()]);
             P2earth.setBounds(295 ,0 , 207, 203);
             add(P2earth);
 
@@ -402,16 +402,15 @@ public class ScencePanel extends JPanel implements ActionListener {
             }
 
             //PLAYER3's card
-            // P3Status = new Player();
-            P3cards = P3Status.getCards();
+            P3cards = status[3].getCards();
 
-            P3holes = new JLabel(number[P3Status.getHoles()]);
+            P3holes = new JLabel(number[status[3].getHoles()]);
             P3holes.setBounds(100 ,450 , 50, 50);
             add(P3holes);
-            P3footsteps = new JLabel(number[P3Status.getFootsteps()]);
+            P3footsteps = new JLabel(number[status[3].getFootsteps()]);
             P3footsteps.setBounds(100 ,375 , 50, 50);
             add(P3footsteps);
-            P3earth = new JLabel(playerEarth[P3Status.getHoles()]);
+            P3earth = new JLabel(playerEarth[status[3].getHoles()]);
             P3earth.setBounds(0 ,120 , 207, 203);
             add(P3earth);
 
@@ -421,8 +420,7 @@ public class ScencePanel extends JPanel implements ActionListener {
                 add(player3[x]);
             }
             repaint();
-            //TODO PLAY AND MINUS YOUR CARD
-            
+
         }else if(btnStr.equals("CARD0")){           
             this.record = 0;                        //RECORD THE CARD YOU CHOOSE
         }else if(btnStr.equals("CARD1")){
@@ -437,7 +435,7 @@ public class ScencePanel extends JPanel implements ActionListener {
             while(userDraw > 0){                    //IF USER CAN DRAW A CARD,
                 int x = cards.size() - 1;           //LET USER DRAW
                 cards.add((int)((Math.random()*100)%16+1));
-                userStatus.setCards(cards);
+                status[0].setCards(cards);
                 cardNum[x] = cards.get(x+1);
                 user[x] = new JButton(playerCard);
                 user[x].setActionCommand("CARD" + String.valueOf(x));
