@@ -37,7 +37,7 @@ public class ScencePanel extends JPanel implements ActionListener {
     private JLabel showCard = new JLabel();
     private Integer[] cardNum = new Integer[5];
     private int record;
-    private PlayAction playAction = new PlayAction();
+    private PlayAction playAction;
     private int userDraw = 1;
 
     public ScencePanel(){
@@ -269,9 +269,9 @@ public class ScencePanel extends JPanel implements ActionListener {
             add(exitBtn);
         }else if(btnStr.equals("PLAY")){
             //NOT YET DEAL WITH THAT USER CAN ONLY PLAY AT HIS/HER TURN
-            playAction.setPlayers(status);
-            playAction.setCard(cardNum[record]);
-            
+            Thread playAction = new Thread(new PlayAction(status, cardNum[record]));
+            playAction.start();
+
             cards.remove(record + 1);
             status[0].setCards(cards);
             this.ScenceX = 0;
