@@ -11,13 +11,13 @@ public class CheckExit extends JFrame implements ActionListener {
             
         JPanel confrimPanel = new JPanel();
         confrimPanel.setLayout(new FlowLayout());
-        JLabel confirmWord = new JLabel("確定要關閉遊戲嗎?");
+        JLabel confirmWord = new JLabel("WANT TO EXIT THE GAME?");
         confrimPanel.add(confirmWord);
         add(confrimPanel, BorderLayout.CENTER);
             
         JPanel btnPanel = new JPanel();
-        JButton yesBtn = new JButton("是");
-        JButton noBtn = new JButton("否");
+        JButton yesBtn = new JButton("YES");
+        JButton noBtn = new JButton("NO");
         yesBtn.addActionListener(this);
         noBtn.addActionListener(this);
         btnPanel.setLayout(new FlowLayout());
@@ -28,9 +28,9 @@ public class CheckExit extends JFrame implements ActionListener {
     }
     public void actionPerformed(ActionEvent e)  {
         String winAct = e.getActionCommand();
-        if(winAct.equals("是")){
+        if(winAct.equals("YES")){
             System.exit(0);
-        }else if(winAct.equals("否")){
+        }else if(winAct.equals("NO")){
             dispose();
         }else{
             System.out.println("Unexepcted Error in Confirm Window.");

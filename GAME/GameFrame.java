@@ -6,7 +6,7 @@ public class GameFrame extends JFrame {
     private CheckExit checkExit;
     private ScencePanel scencePanel;
     public GameFrame(){
-        super("J地球生");
+        super("J-GAME");
         setSize(1280, 770);
         //set window in the center of the screen
         setLocationRelativeTo(null);

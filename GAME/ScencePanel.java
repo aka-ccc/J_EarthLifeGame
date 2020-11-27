@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import javax.swing.border.LineBorder;
 
 public class ScencePanel extends JPanel implements ActionListener {
     //check if you really want to exit the game
@@ -39,6 +40,8 @@ public class ScencePanel extends JPanel implements ActionListener {
     private int record;
     private PlayAction playAction;
     private int userDraw = 1;
+    //COMPUTER PLAYER
+    private ComputerPlay CP1, CP2, CP3;
 
     public ScencePanel(){
         this.ScenceX = 0;
@@ -82,7 +85,8 @@ public class ScencePanel extends JPanel implements ActionListener {
             //DECK CLASS
             cardDeck = new Deck();
 
-            showCard.setBounds(511, 190, 244, 321);
+            showCard.setBounds(470, 160, 340, 448);
+
             add(showCard);
             showCard.setVisible(false);
             //PLAY BUTTON
@@ -269,172 +273,237 @@ public class ScencePanel extends JPanel implements ActionListener {
             add(exitBtn);
         }else if(btnStr.equals("PLAY")){
             //NOT YET DEAL WITH THAT USER CAN ONLY PLAY AT HIS/HER TURN
-            Thread playAction = new Thread(new PlayAction(status, cardNum[record]));
-            playAction.start();
-
-            cards.remove(record + 1);
-            status[0].setCards(cards);
-            this.ScenceX = 0;
-            this.ScenceY = 740;
-            removeAll();
-
-            //DECK CLASS
-            cardDeck = new Deck();
-
-            showCard.setBounds(511, 190, 244, 321);
-            add(showCard);
-            showCard.setVisible(false);
-            //PLAY BUTTON
-            JButton playBtn = new JButton(playIcon);
-            playBtn.setActionCommand("PLAY");
-            playBtn.setBounds(905, 625, 234, 100);
-            playBtn.setOpaque(false);
-            playBtn.setBorder(null);
-            playBtn.setContentAreaFilled(false);
-            playBtn.addActionListener(this);
-            add(playBtn);
-
-            //DECK BUTTON
-            JButton stack = new JButton(cardStack);
-            stack.setActionCommand("DRAW");
-            stack.setBounds(590, 310, 96, 82);
-            stack.setOpaque(false);
-            stack.setBorder(null);
-            stack.setContentAreaFilled(false);
-            stack.addActionListener(this);
-            add(stack);
-
-            //FOR TEST!!!!!!
-            userDraw++;
-
-            //USER's card
-            cards = status[0].getCards();
+            if(userDraw == 0){
             
-            holes = new JLabel(number[status[0].getHoles()]);
-            holes.setBounds(620 ,670 , 50, 50);
-            add(holes);
-            footsteps = new JLabel(number[status[0].getFootsteps()]);
-            footsteps.setBounds(390 ,670 , 50, 50);
-            add(footsteps);
-            earth = new JLabel(userEarth[status[0].getHoles()]);
-            earth.setBounds(0 ,442 , 390, 298);
-            add(earth);
+                Thread playAction = new Thread(new PlayAction(status, cardNum[record], 0));
+                playAction.start();
+                //UPDATE THE CARDINFO OF THE USER
+                cards.remove(record + 1);
+                cards.set(0, cards.get(0) - 1);
+                status[0].setCards(cards);
+                this.ScenceX = 0;
+                this.ScenceY = 740;
+                removeAll();
 
-            //RECORD CARD NUMBER
-            for(int num = 1 ; num <= 5 ; num++){
-                if(num < cards.size()){
-                    cardNum[num-1] = cards.get(num);
-                }else{
-                    cardNum[num-1] = 0;
+                //DECK CLASS
+                cardDeck = new Deck();
+
+                showCard.setBounds(470, 160, 340, 448);
+                add(showCard);
+                showCard.setVisible(false);
+                //PLAY BUTTON
+                JButton playBtn = new JButton(playIcon);
+                playBtn.setActionCommand("PLAY");
+                playBtn.setBounds(905, 625, 234, 100);
+                playBtn.setOpaque(false);
+                playBtn.setBorder(null);
+                playBtn.setContentAreaFilled(false);
+                playBtn.addActionListener(this);
+                add(playBtn);
+
+                //DECK BUTTON
+                JButton stack = new JButton(cardStack);
+                stack.setActionCommand("DRAW");
+                stack.setBounds(590, 310, 96, 82);
+                stack.setOpaque(false);
+                stack.setBorder(null);
+                stack.setContentAreaFilled(false);
+                stack.addActionListener(this);
+                add(stack);
+
+                //FOR TEST!!!!!!
+                userDraw++;
+
+                //USER's card
+                cards = status[0].getCards();
+                
+                holes = new JLabel(number[status[0].getHoles()]);
+                holes.setBounds(620 ,670 , 50, 50);
+                add(holes);
+                footsteps = new JLabel(number[status[0].getFootsteps()]);
+                footsteps.setBounds(390 ,670 , 50, 50);
+                add(footsteps);
+                earth = new JLabel(userEarth[status[0].getHoles()]);
+                earth.setBounds(0 ,442 , 390, 298);
+                add(earth);
+
+                //RECORD CARD NUMBER
+                for(int num = 1 ; num <= 5 ; num++){
+                    if(num < cards.size()){
+                        cardNum[num-1] = cards.get(num);
+                    }else{
+                        cardNum[num-1] = 0;
+                    }
                 }
-            }
-            for(int x = 0 ; x < cards.get(0) ; x++){
-                user[x] = new JButton(playerCard);
-                user[x].setActionCommand("CARD" + String.valueOf(x));
-                user[x].setBounds(380 + x*120, 450, 111, 144);
-                user[x].setOpaque(false);
-                user[x].setBorder(null);
-                user[x].setContentAreaFilled(false);
-                user[x].addActionListener(this);
-                //FOR MOUSE HOVER TO SEE THE CARD INFO
-                user[x].addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                        super.mouseEntered(e);
-                        Object btn;
-                        btn = e.getSource();
-                        Integer count = 0;
-                        //CHECK WHICH CARD HOVER
-                        for(JButton check: user){
-                            if(check == btn){
-                                showCard.setIcon(cardDeck.getCardImg(cardNum[count]));
+                for(int x = 0 ; x < cards.get(0) ; x++){
+                    user[x] = new JButton(playerCard);
+                    user[x].setActionCommand("CARD" + String.valueOf(x));
+                    user[x].setBounds(380 + x*120, 450, 111, 144);
+                    user[x].setOpaque(false);
+                    user[x].setBorder(null);
+                    user[x].setContentAreaFilled(false);
+                    user[x].addActionListener(this);
+                    //FOR MOUSE HOVER TO SEE THE CARD INFO
+                    user[x].addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseEntered(MouseEvent e) {
+                            super.mouseEntered(e);
+                            Object btn;
+                            btn = e.getSource();
+                            Integer count = 0;
+                            //CHECK WHICH CARD HOVER
+                            for(JButton check: user){
+                                if(check == btn){
+                                    showCard.setIcon(cardDeck.getCardImg(cardNum[count]));
+                                }
+                                count++;
                             }
-                            count++;
+                            showCard.setVisible(true);
+                            
                         }
-                        showCard.setVisible(true);
-                        
+                        @Override
+                        public void mouseExited(MouseEvent e) {
+                            super.mouseExited(e);
+                            showCard.setVisible(false);
+                        }
+                    });
+                    add(user[x]);
                     }
-                    @Override
-                    public void mouseExited(MouseEvent e) {
-                        super.mouseExited(e);
-                        showCard.setVisible(false);
+
+                    //PLAYER1's card
+                    P1cards = status[1].getCards();
+
+                    P1holes = new JLabel(number[status[1].getHoles()]);
+                    P1holes.setBounds(1170 ,450 , 50, 50);
+                    add(P1holes);
+                    P1footsteps = new JLabel(number[status[1].getFootsteps()]);
+                    P1footsteps.setBounds(1170 ,375 , 50, 50);
+                    add(P1footsteps);
+                    P1earth = new JLabel(playerEarth[status[1].getHoles()]);
+                    P1earth.setBounds(1060 ,125 , 207, 203);
+                    add(P1earth);
+
+                    for(int x = 0 ; x < P1cards.get(0) ; x++){
+                        player1[x] = new JLabel(player1Card);
+                        player1[x].setBounds(940 + x*10, 180 + x*61, 78, 79);
+                        add(player1[x]);
                     }
-                });
-                add(user[x]);
+
+                    //PLAYER2's card
+                    P2cards = status[2].getCards();
+
+                    P2holes = new JLabel(number[status[2].getHoles()]);
+                    P2holes.setBounds(805 ,75 , 50, 50);
+                    add(P2holes);
+                    P2footsteps = new JLabel(number[status[2].getFootsteps()]);
+                    P2footsteps.setBounds(585 ,75 , 50, 50);
+                    add(P2footsteps);
+                    P2earth = new JLabel(playerEarth[status[2].getHoles()]);
+                    P2earth.setBounds(295 ,0 , 207, 203);
+                    add(P2earth);
+
+                    for(int x = 0 ; x < P2cards.get(0) ; x++){
+                        player2[x] = new JLabel(player2Card);
+                        player2[x].setBounds(510 + x*75, 150, 59, 78);
+                        add(player2[x]);
+                    }
+
+                    //PLAYER3's card
+                    P3cards = status[3].getCards();
+
+                    P3holes = new JLabel(number[status[3].getHoles()]);
+                    P3holes.setBounds(100 ,450 , 50, 50);
+                    add(P3holes);
+                    P3footsteps = new JLabel(number[status[3].getFootsteps()]);
+                    P3footsteps.setBounds(100 ,375 , 50, 50);
+                    add(P3footsteps);
+                    P3earth = new JLabel(playerEarth[status[3].getHoles()]);
+                    P3earth.setBounds(0 ,120 , 207, 203);
+                    add(P3earth);
+
+                    for(int x = 0 ; x < P3cards.get(0) ; x++){
+                        player3[x] = new JLabel(player3Card);
+                        player3[x].setBounds(210 + x*10, 440 - x*61, 78, 79);
+                        add(player3[x]);
+                    }
+                    new Thread( new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(1000);
+                                System.out.println("我慢了1秒");
+                                //UPDATE SCENCE
+                                repaint();
+                            }catch(InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+            }else{
+                System.out.println("DRAW A CARD PLEASE!");
             }
 
-            //PLAYER1's card
-            P1cards = status[1].getCards();
-
-            P1holes = new JLabel(number[status[1].getHoles()]);
-            P1holes.setBounds(1170 ,450 , 50, 50);
-            add(P1holes);
-            P1footsteps = new JLabel(number[status[1].getFootsteps()]);
-            P1footsteps.setBounds(1170 ,375 , 50, 50);
-            add(P1footsteps);
-            P1earth = new JLabel(playerEarth[status[1].getHoles()]);
-            P1earth.setBounds(1060 ,125 , 207, 203);
-            add(P1earth);
-
-            for(int x = 0 ; x < P1cards.get(0) ; x++){
-                player1[x] = new JLabel(player1Card);
-                player1[x].setBounds(940 + x*10, 180 + x*61, 78, 79);
-                add(player1[x]);
-            }
-
-            //PLAYER2's card
-            P2cards = status[2].getCards();
-
-            P2holes = new JLabel(number[status[2].getHoles()]);
-            P2holes.setBounds(805 ,75 , 50, 50);
-            add(P2holes);
-            P2footsteps = new JLabel(number[status[2].getFootsteps()]);
-            P2footsteps.setBounds(585 ,75 , 50, 50);
-            add(P2footsteps);
-            P2earth = new JLabel(playerEarth[status[2].getHoles()]);
-            P2earth.setBounds(295 ,0 , 207, 203);
-            add(P2earth);
-
-            for(int x = 0 ; x < P2cards.get(0) ; x++){
-                player2[x] = new JLabel(player2Card);
-                player2[x].setBounds(510 + x*75, 150, 59, 78);
-                add(player2[x]);
-            }
-
-            //PLAYER3's card
-            P3cards = status[3].getCards();
-
-            P3holes = new JLabel(number[status[3].getHoles()]);
-            P3holes.setBounds(100 ,450 , 50, 50);
-            add(P3holes);
-            P3footsteps = new JLabel(number[status[3].getFootsteps()]);
-            P3footsteps.setBounds(100 ,375 , 50, 50);
-            add(P3footsteps);
-            P3earth = new JLabel(playerEarth[status[3].getHoles()]);
-            P3earth.setBounds(0 ,120 , 207, 203);
-            add(P3earth);
-
-            for(int x = 0 ; x < P3cards.get(0) ; x++){
-                player3[x] = new JLabel(player3Card);
-                player3[x].setBounds(210 + x*10, 440 - x*61, 78, 79);
-                add(player3[x]);
-            }
+            //Computer Player's turn
+            Thread CP1 = new Thread(new ComputerPlay(this, status, 1));
+            CP1.start();
+            Thread CP2 = new Thread(new ComputerPlay(this, status, 2));
+            CP2.start();
+            Thread CP3 = new Thread(new ComputerPlay(this, status, 3));
+            CP3.start();
             repaint();
+            
 
         }else if(btnStr.equals("CARD0")){           
             this.record = 0;                        //RECORD THE CARD YOU CHOOSE
+            // user[0].setBorder(new LineBorder(Color.RED, 5));
+            for(int x = 0 ; x < cards.get(0) ; x++){
+                if(x == 0){
+                    user[x].setBorder(new LineBorder(Color.YELLOW, 5));
+                }else{
+                    user[x].setBorder(null);
+                }
+            }
         }else if(btnStr.equals("CARD1")){
             this.record = 1;                        //RECORD THE CARD YOU CHOOSE
+            for(int x = 0 ; x < cards.get(0) ; x++){
+                if(x == 1){
+                    user[x].setBorder(new LineBorder(Color.YELLOW, 5));
+                }else{
+                    user[x].setBorder(null);
+                }
+            }
         }else if(btnStr.equals("CARD2")){
             this.record = 2;                        //RECORD THE CARD YOU CHOOSE
+            for(int x = 0 ; x < cards.get(0) ; x++){
+                if(x == 2){
+                    user[x].setBorder(new LineBorder(Color.YELLOW, 5));
+                }else{
+                    user[x].setBorder(null);
+                }
+            }
         }else if(btnStr.equals("CARD3")){
             this.record = 3;                        //RECORD THE CARD YOU CHOOSE
+            for(int x = 0 ; x < cards.get(0) ; x++){
+                if(x == 3){
+                    user[x].setBorder(new LineBorder(Color.YELLOW, 5));
+                }else{
+                    user[x].setBorder(null);
+                }
+            }
         }else if(btnStr.equals("CARD4")){
             this.record = 4;                        //RECORD THE CARD YOU CHOOSE
+            for(int x = 4 ; x < cards.get(0) ; x++){
+                if(x == 0){
+                    user[x].setBorder(new LineBorder(Color.YELLOW, 5));
+                }else{
+                    user[x].setBorder(null);
+                }
+            }
         }else if(btnStr.equals("DRAW")){
             while(userDraw > 0){                    //IF USER CAN DRAW A CARD,
                 int x = cards.size() - 1;           //LET USER DRAW
                 cards.add((int)((Math.random()*100)%16+1));
+                cards.set(0, cards.get(0) + 1);
                 status[0].setCards(cards);
                 cardNum[x] = cards.get(x+1);
                 user[x] = new JButton(playerCard);
@@ -470,6 +539,9 @@ public class ScencePanel extends JPanel implements ActionListener {
                 add(user[x]);
                 repaint();
                 userDraw--;
+
+                //DEFAULT SET USER PLAY THE RIGHT CARD
+                record = cards.get(0) - 1;
             }
         }else{
             System.out.println("Unexepcted Error!!");

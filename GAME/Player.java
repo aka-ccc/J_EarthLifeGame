@@ -5,6 +5,7 @@ public class Player {
     private int holes;
     private int footsteps;
     private ArrayList<Integer> cards;
+    private Boolean win, lose;
     public Player(){
         //holes,footsteps,cards
         this.holes = 0;
@@ -13,6 +14,8 @@ public class Player {
         this.cards.add(2);
         this.cards.add((int)((Math.random()*100)%16+1));
         this.cards.add((int)((Math.random()*100)%16+1));
+        this.win = false;
+        this.lose = false;
     }
     public void setHoles(int HolesNum) {
         this.holes = HolesNum;
@@ -31,5 +34,17 @@ public class Player {
     }
     public ArrayList<Integer> getCards() {
         return this.cards;
+    }
+    public void setWin(boolean winner) {
+        this.win = winner;
+    }
+    public void setLose(boolean loser) {
+        this.lose= loser;
+    }
+    public boolean checkLose() {
+        return this.lose;
+    }
+    public boolean checkWin() {
+        return this.win;
     }
 }
