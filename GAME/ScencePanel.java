@@ -446,10 +446,13 @@ public class ScencePanel extends JPanel implements ActionListener {
             //Computer Player's turn
             Thread CP1 = new Thread(new ComputerPlay(this, status, 1));
             CP1.start();
+            
             Thread CP2 = new Thread(new ComputerPlay(this, status, 2));
             CP2.start();
+            
             Thread CP3 = new Thread(new ComputerPlay(this, status, 3));
             CP3.start();
+
             repaint();
             
 
