@@ -41,7 +41,8 @@ public class ScencePanel extends JPanel implements ActionListener {
     private PlayAction playAction;
     private int userDraw = 1;
     //COMPUTER PLAYER
-    private ComputerPlay CP1, CP2, CP3;
+    private ComputerPlay CP;
+    private boolean userAction = true;
 
     public ScencePanel(){
         this.ScenceX = 0;
@@ -273,8 +274,8 @@ public class ScencePanel extends JPanel implements ActionListener {
             add(exitBtn);
         }else if(btnStr.equals("PLAY")){
             //NOT YET DEAL WITH THAT USER CAN ONLY PLAY AT HIS/HER TURN
-            if(userDraw == 0){
-            
+            if(userDraw == 0 && (userAction == true)){
+                resetUserAction(false);
                 Thread playAction = new Thread(new PlayAction(status, cardNum[record], 0));
                 playAction.start();
                 //UPDATE THE CARDINFO OF THE USER
@@ -310,9 +311,6 @@ public class ScencePanel extends JPanel implements ActionListener {
                 stack.setContentAreaFilled(false);
                 stack.addActionListener(this);
                 add(stack);
-
-                //FOR TEST!!!!!!
-                userDraw++;
 
                 //USER's card
                 cards = status[0].getCards();
@@ -431,7 +429,6 @@ public class ScencePanel extends JPanel implements ActionListener {
                         public void run() {
                             try {
                                 Thread.sleep(1000);
-                                System.out.println("我慢了1秒");
                                 //UPDATE SCENCE
                                 repaint();
                             }catch(InterruptedException e) {
@@ -439,21 +436,14 @@ public class ScencePanel extends JPanel implements ActionListener {
                             }
                         }
                     }).start();
+                    //Computer Player's turn
+                    Thread CP = new Thread(new ComputerPlay(this, status));
+                    CP.start();
+                    repaint();
             }else{
                 System.out.println("DRAW A CARD PLEASE!");
             }
 
-            //Computer Player's turn
-            Thread CP1 = new Thread(new ComputerPlay(this, status, 1));
-            CP1.start();
-            
-            Thread CP2 = new Thread(new ComputerPlay(this, status, 2));
-            CP2.start();
-            
-            Thread CP3 = new Thread(new ComputerPlay(this, status, 3));
-            CP3.start();
-
-            repaint();
             
 
         }else if(btnStr.equals("CARD0")){           
@@ -555,5 +545,14 @@ public class ScencePanel extends JPanel implements ActionListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.drawImage(this.Scence, -ScenceX, -ScenceY, this.Scence.getWidth(null), this.Scence.getHeight(null), null);
+    }
+    public int getDraw() {
+        return this.userDraw;
+    }
+    public void setDraw(int draw) {
+        this.userDraw = draw;
+    }
+    public void resetUserAction(boolean action){
+        this.userAction = action;
     }
 }

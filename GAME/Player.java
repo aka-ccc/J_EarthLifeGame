@@ -19,9 +19,17 @@ public class Player {
     }
     public void setHoles(int HolesNum) {
         this.holes = HolesNum;
+        if(this.holes >= 3) {
+            this.holes = 3;
+            this.setLose(true);
+        }
     }
     public void setFootsteps(int FootstepsNum) {
         this.footsteps = FootstepsNum;
+        if(this.footsteps >= 15) {
+            this.footsteps = 15;
+            this.setWin(true);
+        }
     }
     public void setCards(ArrayList<Integer> CardsInfo) {
         this.cards = CardsInfo;
