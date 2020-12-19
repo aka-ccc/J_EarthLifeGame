@@ -8,12 +8,12 @@ public class Deck {
     public Deck() {
         //FOR REPORT2, WE USE 16 CARDS FOR CHECKING
         this.cardImg = new HashMap<Integer, ImageIcon>();
-        for(Integer key = 1 ; key <= 16 ; key++){
+        for(Integer key = 1 ; key <= 38 ; key++){
             ImageIcon tempImg;
             if(key < 10){
-                tempImg = new ImageIcon("Resource/Photo/originalgame0" + key + ".png");
+                tempImg = new ImageIcon("Resource/originalcard/originalgame0" + key + ".png");
             }else{
-                tempImg = new ImageIcon("Resource/Photo/originalgame" + key + ".png");
+                tempImg = new ImageIcon("Resource/originalcard/originalgame" + key + ".png");
             }
             cardImg.put(key, tempImg);
         }

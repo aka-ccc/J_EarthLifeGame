@@ -12,8 +12,8 @@ public class Player {
         this.footsteps = 0;
         this.cards = new ArrayList<Integer>();
         this.cards.add(2);
-        this.cards.add((int)((Math.random()*100)%16+1));
-        this.cards.add((int)((Math.random()*100)%16+1));
+        this.cards.add((int)((Math.random()*100)%32+1));
+        this.cards.add((int)((Math.random()*100)%32+1));
         this.win = false;
         this.lose = false;
     }
@@ -22,6 +22,8 @@ public class Player {
         if(this.holes >= 3) {
             this.holes = 3;
             this.setLose(true);
+        }else if(this.holes < 0){
+            this.holes = 0;
         }
     }
     public void setFootsteps(int FootstepsNum) {
@@ -47,6 +49,7 @@ public class Player {
         this.win = winner;
     }
     public void setLose(boolean loser) {
+        this.holes = 3;
         this.lose= loser;
     }
     public boolean checkLose() {

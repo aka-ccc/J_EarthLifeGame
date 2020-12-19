@@ -5,7 +5,7 @@ import java.awt.event.*;
 public class GameFrame extends JFrame {
     private CheckExit checkExit;
     private ScencePanel scencePanel;
-    public GameFrame(){
+    public GameFrame() {
         super("J-GAME");
         setSize(1280, 770);
         //set window in the center of the screen
