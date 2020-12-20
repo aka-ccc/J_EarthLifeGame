@@ -80,7 +80,7 @@ public class PlayAction implements Runnable {
                                     players[0].setHoles(players[0].getHoles());
                                 }
                                 chooseFrame.setVisible(false);
-                                click = true;
+                                
                             }
                         });
                         chooseFrame.add(option1);
@@ -681,7 +681,26 @@ public class PlayAction implements Runnable {
         }else {
             System.out.println("Unexepcted Error!!");
         }
-        
-        
+        panel.gameScence();
+        panel.setRuleLabelVisible(false);
+        panel.setWhoturnLabelVisible(0, false);
+        panel.setHintLabelVisible(false);
+        if(whoPlay == 0){
+            
+        }
     }
+    // private static void checkClick(boolean click) {
+    //     try {
+    //         Thread checkThread = new Thread(new Runnable(){
+    //             @Override
+    //             public void run() {
+                    
+    //             }
+    //         });
+    //         checkThread.join();
+    //     }catch(InterruptedException e) {
+    //         System.out.println("Unexpected interruption");
+    //         System.exit(0);
+    //     }
+    // }
 }

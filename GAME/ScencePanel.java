@@ -38,21 +38,22 @@ public class ScencePanel extends JPanel implements ActionListener {
     //game_Scence_Objs
     private Player status[] = new Player[]{new Player(), new Player(), new Player(), new Player()};
     private JButton user[] = new JButton[]{new JButton(playerCard), new JButton(playerCard), new JButton(playerCard), new JButton(playerCard), new JButton(playerCard)};
-    private JLabel player1[] = new JLabel[]{new JLabel(player1Card), new JLabel(player1Card), new JLabel(player1Card), new JLabel(player1Card), new JLabel(player1Card)}, player2[] = new JLabel[]{new JLabel(player2Card), new JLabel(player2Card), new JLabel(player2Card), new JLabel(player2Card), new JLabel(player2Card)}, player3[] = new JLabel[]{new JLabel(player3Card), new JLabel(player3Card), new JLabel(player3Card), new JLabel(player3Card), new JLabel(player3Card)};
     private ArrayList<Integer> cards, P1cards, P2cards, P3cards;
+    private JLabel player1[] = new JLabel[]{new JLabel(player1Card), new JLabel(player1Card), new JLabel(player1Card), new JLabel(player1Card), new JLabel(player1Card)}, player2[] = new JLabel[]{new JLabel(player2Card), new JLabel(player2Card), new JLabel(player2Card), new JLabel(player2Card), new JLabel(player2Card)}, player3[] = new JLabel[]{new JLabel(player3Card), new JLabel(player3Card), new JLabel(player3Card), new JLabel(player3Card), new JLabel(player3Card)};
     private JLabel holes = new JLabel(), P1holes = new JLabel(), P2holes = new JLabel(), P3holes = new JLabel();
     private JLabel footsteps = new JLabel(), P1footsteps = new JLabel(), P2footsteps = new JLabel(), P3footsteps = new JLabel();
     private JLabel earth = new JLabel(), P1earth = new JLabel(), P2earth = new JLabel(), P3earth = new JLabel();
     private JLabel whoTurn[] = new JLabel[]{new JLabel(whoturn[0]), new JLabel(whoturn[1]), new JLabel(whoturn[1]), new JLabel(whoturn[1])};
-    //show cards and play
+    //get_card_imgs
     private Deck cardDeck = new Deck();
+    //set_user_hover(user's_cards)
     private JLabel showCard = new JLabel();
+    //record_user's_cards_and_use_it_to_get_imgs
     private Integer[] cardNum = new Integer[5];
+    //record_the_card_user_choose
     private int record;
-    private PlayAction playAction;
+    //set_how_many_card_user_can_draw
     private int userDraw = 1;
-    //COMPUTER PLAYER
-    private ComputerPlay CP;
     //game_Scence_Objs
     private boolean userAction = true;
     private JLabel playerHit = new JLabel(), choose = new JLabel(chooseFrame), ruleLabel = new JLabel(ruleFrame), hintLabel = new JLabel(hint), winLabel = new JLabel(winPanel), loseLabel = new JLabel(losePanel);
@@ -89,7 +90,8 @@ public class ScencePanel extends JPanel implements ActionListener {
                         setWhoturnLabelVisible(0, false);
                         repaint();
                     }catch(InterruptedException e) {
-                        e.printStackTrace();
+                        System.out.println("Unexpected interruption");
+                        System.exit(0);
                     }
                 }
             }).start();
@@ -114,14 +116,18 @@ public class ScencePanel extends JPanel implements ActionListener {
 
                 user[record].setBorder(null);
                 resetUserAction(false);
-                Thread playAction = new Thread(new PlayAction(this, status, cardNum[record], 0));
-                playAction.start();
+                // Thread playAct = new Thread(new PlayAction(this, status, cardNum[record], 0));
+                // playAct.start();
+                // Thread playAct = new Thread(new ComputerPlay(this, status, cardDeck, cardNum[record], 0));
+                // playAct.start();
                 /////////////////////////////////////////////////////////////////////////////////
                 
                 //UPDATE THE CARDINFO OF THE USER
                 cards.remove(record + 1);
                 cards.set(0, cards.get(0) - 1);
                 status[0].setCards(cards);
+                Thread playAct = new Thread(new PlayAction(this, status, cardNum[record], 0));
+                playAct.start();
                 gameScence();
                 setRuleLabelVisible(false);
                 setWhoturnLabelVisible(0, false);
@@ -135,41 +141,17 @@ public class ScencePanel extends JPanel implements ActionListener {
                             //UPDATE SCENCE
                             repaint();
                         }catch(InterruptedException e) {
-                            e.printStackTrace();
+                            System.out.println("Unexpected interruption");
+                            System.exit(0);
                         }
                     }
                 }).start();
 
-                for(Player p:status) {
-                    if(p == status[0]) {
-                        if(p.checkLose()) {
-                            setLoseLabelVisible(true);
-                            break;
-                        }
-                    }else if(p != status[3]){
-                        if(!p.checkLose()) {
-                            break;
-                        }else if(p.checkWin()) {
-                            setLoseLabelVisible(true);
-                            break;
-                        }
-                    }else {
-                        if(!p.checkLose()) {
-                            break;
-                        }else if(p.checkWin()) {
-                            setLoseLabelVisible(true);
-                            break;
-                        }
-                        setWinLabelVisible(true);
-                        status[0].setWin(true);
-                    }
-                }
-                if(status[0].checkLose() || status[0].checkWin()) {
-                    
+                if(checkGameOver()) {
+
                 }else{
-                    //Computer Player's turn
-                    Thread CP = new Thread(new ComputerPlay(this, status));
-                    CP.start();
+                    Thread ComputerPlayAct = new Thread(new ComputerPlay(this, status, cardDeck));
+                    ComputerPlayAct.start();
                 }
                 repaint();
 
@@ -178,8 +160,6 @@ public class ScencePanel extends JPanel implements ActionListener {
             }else{
                 System.out.println("CHOOSE A CARD PLEASE!");
             }
-
-            
 
         }else if(btnStr.equals("CARD0")){           
             if(record >= 0) {
@@ -526,6 +506,8 @@ public class ScencePanel extends JPanel implements ActionListener {
         P1earth.setIcon(playerEarth[status[1].getHoles()]);
         add(P1earth);
 
+        add(whoTurn[1]);
+        setWhoturnLabelVisible(1, false);
         for(int x = 0 ; x < 5 ; x++){
             if(x < P1cards.get(0)){
                 add(player1[x]);
@@ -545,6 +527,8 @@ public class ScencePanel extends JPanel implements ActionListener {
         P2earth.setIcon(playerEarth[status[2].getHoles()]);
         add(P2earth);
 
+        add(whoTurn[2]);
+        setWhoturnLabelVisible(2, false);
         for(int x = 0 ; x < 5 ; x++){
             if(x < P2cards.get(0)){
                 add(player2[x]);
@@ -564,6 +548,8 @@ public class ScencePanel extends JPanel implements ActionListener {
         P3earth.setIcon(playerEarth[status[3].getHoles()]);
         add(P3earth);
 
+        add(whoTurn[3]);
+        setWhoturnLabelVisible(3, false);
         for(int x = 0 ; x < 5 ; x++){
             if(x < P3cards.get(0)){
                 add(player3[x]);
@@ -585,5 +571,33 @@ public class ScencePanel extends JPanel implements ActionListener {
         }else {
             System.out.println("Unexcepted ERROR!!");
         }
+    }
+    public boolean checkGameOver() {
+        for(Player p:status) {
+            if(p == status[0]) {
+                if(p.checkLose()) {
+                    setLoseLabelVisible(true);
+                    return true;
+                }
+            }else if(p != status[3]){
+                if(!p.checkLose()) {
+                    return false;
+                }else if(p.checkWin()) {
+                    setLoseLabelVisible(true);
+                    return true;
+                }
+            }else {
+                if(!p.checkLose()) {
+                    return false;
+                }else if(p.checkWin()) {
+                    setLoseLabelVisible(true);
+                    return true;
+                }
+                setWinLabelVisible(true);
+                status[0].setWin(true);
+                return true;
+            }
+        }
+        return false;
     }
 }
