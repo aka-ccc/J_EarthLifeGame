@@ -80,7 +80,7 @@ public class PlayAction implements Runnable {
                                     players[0].setHoles(players[0].getHoles());
                                 }
                                 chooseFrame.setVisible(false);
-                                
+                                click = true;
                             }
                         });
                         chooseFrame.add(option1);
@@ -682,9 +682,6 @@ public class PlayAction implements Runnable {
             System.out.println("Unexepcted Error!!");
         }
         panel.gameScence();
-        panel.setRuleLabelVisible(false);
-        panel.setWhoturnLabelVisible(0, false);
-        panel.setHintLabelVisible(false);
         if(whoPlay == 0){
             
         }

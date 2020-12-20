@@ -81,30 +81,15 @@ public class ComputerPlay implements Runnable {
                 doNothing(1800);
     
                 //PLAYER DRAW CARD
-                if(who == 1){
-                    panel.setPlayerCardVisible(1, amount - 1, true);
-                    panel.setWhoturnLabelVisible(1, true);
-                }else if(who == 2){
-                    panel.setPlayerCardVisible(2, amount - 1, true);
-                    panel.setWhoturnLabelVisible(2, true);
-                }else{
-                    panel.setPlayerCardVisible(3, amount - 1, true);
-                    panel.setWhoturnLabelVisible(3, true);
-                }
+                panel.setPlayerCardVisible(who, amount - 1, true);
+                panel.setWhoturnLabelVisible(who, true);
                 panel.repaint();
                 //PLAYER HIT
                 doNothing(1000);
-                if(who == 1){
-                    panel.setPlayerCardVisible(1, amount - 1, false);
-                    panel.setWhoturnLabelVisible(1, false);
-                }else if(who == 2){
-                    panel.setPlayerCardVisible(2, amount - 1, false);
-                    panel.setWhoturnLabelVisible(2, false);
-                }else{
-                    panel.setPlayerCardVisible(3, amount - 1, false);
-                    panel.setWhoturnLabelVisible(3, false);
-                }
+                panel.setPlayerCardVisible(who, amount - 1, false);
+                panel.setWhoturnLabelVisible(who, false);
                 panel.repaint();
+                
                 int hit = (int)((Math.random()*100)%amount)+1;
                 int show = cards.get(hit);
                 Thread play = new Thread(new PlayAction(panel, players, cards.get(hit), who));

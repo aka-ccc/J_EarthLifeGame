@@ -81,6 +81,9 @@ public class ScencePanel extends JPanel implements ActionListener {
             setDraw(1);
             resetUserAction(true);
             gameScence();
+            setRuleLabelVisible(true);
+            setWhoturnLabelVisible(0, true);
+            setHintLabelVisible(true);
             new Thread( new Runnable() {
                 @Override
                 public void run() {
@@ -426,10 +429,10 @@ public class ScencePanel extends JPanel implements ActionListener {
 
         //RULE FRAME
         add(ruleLabel);
-        setRuleLabelVisible(true);
+        setRuleLabelVisible(false);
         //WHO TURN
         add(whoTurn[0]);
-        setWhoturnLabelVisible(0, true);
+        setWhoturnLabelVisible(0, false);
         //CHOOSE_FRAME
         add(choose);
         setChooseVisible(false);
@@ -443,7 +446,7 @@ public class ScencePanel extends JPanel implements ActionListener {
         setShowCardVisible(false);
         //HINT
         add(hintLabel);
-        setHintLabelVisible(true);
+        setHintLabelVisible(false);
 
         //PLAY BUTTON
         add(playBtn);
